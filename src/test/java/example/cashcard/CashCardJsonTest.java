@@ -7,7 +7,7 @@ public class CashCardJsonTest {
 
     @Test
     void myFirstTest() {
-        // step 1: write a failing test
-        assertThat(1).isEqualTo(42);
+        // step 2: fix the test
+        assertThat(42).isEqualTo(42);
     }
 }
