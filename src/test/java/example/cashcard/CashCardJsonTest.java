@@ -26,7 +26,7 @@ public class CashCardJsonTest {
     }
 
     @Test
-    void cashCardDerializationTest() throws IOException {
+    void cashCardDeserializationTest() throws IOException {
         String expected = """
                     {
                         "id":99,
