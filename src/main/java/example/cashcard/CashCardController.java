@@ -39,8 +39,8 @@ class CashCardController {
 //        return ResponseEntity.ok(cashCardRepository.findAll());
         Page<CashCard> page = cashCardRepository.findAll(
                 PageRequest.of(
-                        pageable.getPageNumber(),
-                        pageable.getPageSize(),
+                        pageable.getPageNumber(), // default is 0
+                        pageable.getPageSize(), // default is 20
                         pageable.getSortOr(Sort.by(Sort.Direction.ASC, "amount"))
                 ));
         return ResponseEntity.ok(page.getContent());
