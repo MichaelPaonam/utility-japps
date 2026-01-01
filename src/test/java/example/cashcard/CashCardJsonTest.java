@@ -67,8 +67,8 @@ class CashCardJsonTest {
         String expected = """
                     [
                         {"id": 99, "amount": 123.45 },
-                        {"id": 99, "amount": 123.45 },
-                        {"id": 99, "amount": 123.45 }
+                        {"id": 100, "amount": 1.00 },
+                        {"id": 101, "amount": 150.00 }
                     ]
                 """;
         assertThat(jsonList.parse(expected)).isEqualTo(cashCards);
