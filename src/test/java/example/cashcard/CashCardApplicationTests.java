@@ -7,6 +7,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.TypeRef;
 import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -75,22 +76,25 @@ class CashCardApplicationTests {
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		// in order to use TypeRef
-		Configuration configuration = Configuration.builder()
-				.jsonProvider(new JacksonJsonProvider())
-				.mappingProvider(new JacksonMappingProvider(new ObjectMapper()))
-				.build();
-
-		DocumentContext documentContext = JsonPath.using(configuration).parse(response.getBody());
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
 		int cashCardCount = documentContext.read("$.length()");
 		assertThat(cashCardCount).isEqualTo(3);
 
-		//JSONArray ids = documentContext.read("$..id"); containsExactlyInAnyOrder expects List<Integer> not JSONArray
-		List<Integer> ids = documentContext.read("$..id", new TypeRef<>() {});
+		JSONArray ids = documentContext.read("$..id");
 		assertThat(ids).containsExactlyInAnyOrder(99, 100, 101);
 
-		List<Double> amounts = documentContext.read("$..amount", new TypeRef<>() {});
+		JSONArray amounts = documentContext.read("$..amount");
 		assertThat(amounts).containsExactlyInAnyOrder(123.45, 1.00, 150.00);
+	}
+
+	@Test
+	void shouldReturnAPageOfCashCards() {
+		ResponseEntity<String> response = restTemplate.getForEntity("/cashcards?page=0&size=1", String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		JSONArray page = documentContext.read("$[*]");
+		assertThat(page.size()).isEqualTo(1);
 	}
 
 }
