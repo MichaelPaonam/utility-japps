@@ -20,7 +20,7 @@ class SecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/cashcards/**")
-                        .authenticated())
+                        .hasRole("CARD-OWNER")) // RBAC enabled and replaced authenticated()
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable); // same as : .csrf(csrf -> csrf.disable());
         return http.build();
