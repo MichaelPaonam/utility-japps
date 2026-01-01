@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,12 +23,17 @@ class CashCardController {
         this.cashCardRepository = cashCardRepository;
     }
     @GetMapping("/{requestedById}")
-    private ResponseEntity<CashCard> findById(@PathVariable Long requestedById) {
-        Optional<CashCard> cashCardOptional = cashCardRepository.findById(requestedById);
+    private ResponseEntity<CashCard> findById(@PathVariable Long requestedById, Principal principal) {
+
+        Optional<CashCard> cashCardOptional =
+                Optional.ofNullable(
+                        cashCardRepository.findByIdAndOwner(requestedById, principal.getName())
+                );
+        /*Optional<CashCard> cashCardOptional = cashCardRepository.findById(requestedById);*/
         return cashCardOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
         //above return statement same as
-/*        if(cashCardOptional.isPresent()) {
+      /*if(cashCardOptional.isPresent()) {
             return ResponseEntity.ok(cashCardOptional.get());
         } else {
             return ResponseEntity.notFound().build();
