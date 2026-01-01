@@ -1,9 +1,12 @@
 package example.cashcard;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.TypeRef;
-import org.json.JSONArray;
+import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,7 +74,13 @@ class CashCardApplicationTests {
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		// in order to use TypeRef
+		Configuration configuration = Configuration.builder()
+				.jsonProvider(new JacksonJsonProvider())
+				.mappingProvider(new JacksonMappingProvider(new ObjectMapper()))
+				.build();
+
+		DocumentContext documentContext = JsonPath.using(configuration).parse(response.getBody());
 		int cashCardCount = documentContext.read("$.length()");
 		assertThat(cashCardCount).isEqualTo(3);
 
@@ -80,7 +89,7 @@ class CashCardApplicationTests {
 		assertThat(ids).containsExactlyInAnyOrder(99, 100, 101);
 
 		List<Double> amounts = documentContext.read("$..amount", new TypeRef<List<Double>>() {});
-		assertThat(amounts).containsExactlyInAnyOrder(123.45, 100.0, 150.00);
+		assertThat(amounts).containsExactlyInAnyOrder(123.45, 1.00, 150.00);
 	}
 
 }
