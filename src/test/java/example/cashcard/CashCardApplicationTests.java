@@ -2,6 +2,8 @@ package example.cashcard;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.TypeRef;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.net.URI;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,6 +70,17 @@ class CashCardApplicationTests {
 		ResponseEntity<String> response = restTemplate.getForEntity("/cashcards", String.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		int cashCardCount = documentContext.read("$.length()");
+		assertThat(cashCardCount).isEqualTo(3);
+
+		//JSONArray ids = documentContext.read("$..id"); containsExactlyInAnyOrder expects List<Integer> not JSONArray
+		List<Integer> ids = documentContext.read("$..id", new TypeRef<List<Integer>>() {});
+		assertThat(ids).containsExactlyInAnyOrder(99, 100, 101);
+
+		List<Double> amounts = documentContext.read("$..amount", new TypeRef<List<Double>>() {});
+		assertThat(amounts).containsExactlyInAnyOrder(123.45, 100.0, 150.00);
 	}
 
 }
