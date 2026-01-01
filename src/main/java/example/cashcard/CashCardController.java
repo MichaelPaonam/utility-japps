@@ -3,6 +3,7 @@ package example.cashcard;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +30,6 @@ class CashCardController {
 
     @PostMapping
     private ResponseEntity<Void> createCashCard() {
-        return null;
+        return ResponseEntity.created(URI.create("/what/should/go/here")).build();
     }
 }
