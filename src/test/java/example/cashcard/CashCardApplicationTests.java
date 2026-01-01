@@ -86,10 +86,10 @@ class CashCardApplicationTests {
 		assertThat(cashCardCount).isEqualTo(3);
 
 		//JSONArray ids = documentContext.read("$..id"); containsExactlyInAnyOrder expects List<Integer> not JSONArray
-		List<Integer> ids = documentContext.read("$..id", new TypeRef<List<Integer>>() {});
+		List<Integer> ids = documentContext.read("$..id", new TypeRef<>() {});
 		assertThat(ids).containsExactlyInAnyOrder(99, 100, 101);
 
-		List<Double> amounts = documentContext.read("$..amount", new TypeRef<List<Double>>() {});
+		List<Double> amounts = documentContext.read("$..amount", new TypeRef<>() {});
 		assertThat(amounts).containsExactlyInAnyOrder(123.45, 1.00, 150.00);
 	}
 
