@@ -22,22 +22,18 @@ class CashCardController {
     private CashCardController(CashCardRepository cashCardRepository) {
         this.cashCardRepository = cashCardRepository;
     }
+
+    private CashCard findCashCard(Long requestedId, Principal principal) {
+        return cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
+    }
     @GetMapping("/{requestedById}")
     private ResponseEntity<CashCard> findById(@PathVariable Long requestedById, Principal principal) {
-
-        Optional<CashCard> cashCardOptional =
-                Optional.ofNullable(
-                        cashCardRepository.findByIdAndOwner(requestedById, principal.getName())
-                );
-        /*Optional<CashCard> cashCardOptional = cashCardRepository.findById(requestedById);*/
-        return cashCardOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-
-        //above return statement same as
-      /*if(cashCardOptional.isPresent()) {
-            return ResponseEntity.ok(cashCardOptional.get());
+        CashCard cashCard = cashCardRepository.findByIdAndOwner(requestedById, principal.getName());
+        if(cashCard != null) {
+            return ResponseEntity.ok(cashCard);
         } else {
             return ResponseEntity.notFound().build();
-        }*/
+        }
     }
 
     @GetMapping

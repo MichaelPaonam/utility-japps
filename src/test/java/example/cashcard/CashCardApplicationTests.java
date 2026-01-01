@@ -171,7 +171,7 @@ class CashCardApplicationTests {
 		ResponseEntity<String> getResponse = restTemplate
 				.withBasicAuth("sarah1", "abc123")
 				.getForEntity("/cashcards/99", String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
 		Number id = documentContext.read("$.id");
@@ -187,7 +187,7 @@ class CashCardApplicationTests {
 		HttpEntity<CashCard> request = new HttpEntity<>(unknownCard);
 		ResponseEntity<Void> response = restTemplate
 								.withBasicAuth("sarah1", "abc123")
-								.exchange("/cashcards/99", HttpMethod.PUT, request, Void.class);
+								.exchange("/cashcards/102", HttpMethod.PUT, request, Void.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
