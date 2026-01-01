@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Iterator;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +28,11 @@ class CashCardController {
         } else {
             return ResponseEntity.notFound().build();
         }*/
+    }
+
+    @GetMapping
+    private ResponseEntity<Iterable<CashCard>> findAll() {
+        return ResponseEntity.ok(cashCardRepository.findAll());
     }
 
     @PostMapping
